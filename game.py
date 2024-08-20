@@ -7,6 +7,8 @@ def draw_floor():
 pygame.init()
 screen= pygame.display.set_mode((432,768))
 clock = pygame.time.Clock()
+gravity = 0.25
+bird_movement = 0
 # chèn backgroud
 bg = pygame.image.load('assests//background-night.png').convert()
 bg = pygame.transform.scale2x(bg)
@@ -25,9 +27,14 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                bird_movement = 0
+                bird_movement =-11
     screen.blit(bg,(0,0))
+    bird_movement += gravity
+    bird_rect.centery += bird_movement
     screen.blit(bird,bird_rect)
-
     
     floor_x_pos -= 1
     draw_floor()
