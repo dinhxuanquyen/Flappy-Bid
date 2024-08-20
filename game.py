@@ -26,6 +26,7 @@ def draw_pipe(pipes):
 def check_collision(pipes):
     for pipe in pipes:
         if bird_rect.colliderect(pipe):
+            hit_sound.play()
             return False
     if bird_rect.top <= -75 or bird_rect.bottom >= 650:
             return False
@@ -51,7 +52,7 @@ def score_display(game_sate):
         screen.blit(score_surface,score_rect)
 
         hight_score_surface = game_font.render(f'High Score: {int(high_score)}',True,(255,255,255))
-        hight_score_rect = hight_score_surface.get_rect(center = (216,610))
+        hight_score_rect = hight_score_surface.get_rect(center = (216,630))
         screen.blit(hight_score_surface,hight_score_rect)
 
 def update_score(score,high_score):
@@ -59,6 +60,7 @@ def update_score(score,high_score):
         high_score = score
     return high_score
 
+pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
 pygame.init()
 screen= pygame.display.set_mode((432,768))
 clock = pygame.time.Clock()
@@ -99,7 +101,15 @@ pipe_list =[]
 spawnpipe=pygame.USEREVENT
 pygame.time.set_timer(spawnpipe, 1200)
 pipe_height = [200,300,400]
+#Tạo màn hình kết thúc
+game_over_surface = pygame.transform.scale2x(pygame.image.load('assests/message.png').convert_alpha())
+game_over_rect = game_over_surface.get_rect(center=(216,384))
 
+#Chèn âm thanh
+flap_sound = pygame.mixer.Sound('sound/sfx_wing.wav')
+hit_sound = pygame.mixer.Sound('sound/sfx_hit.wav')
+score_sound = pygame.mixer.Sound('sound/sfx_point.wav')
+score_sound_countdown = 100
 
 
 while True:
@@ -111,6 +121,7 @@ while True:
             if event.key == pygame.K_SPACE and game_active:
                 bird_movement = 0
                 bird_movement =-11
+                flap_sound.play()
             if event.key == pygame.K_SPACE and game_active==False:
                 game_active = True
                 pipe_list.clear()
@@ -140,7 +151,12 @@ while True:
         draw_pipe(pipe_list)
         score += 0.01
         score_display('main game')
+        score_sound_countdown -= 1
+        if score_sound_countdown <= 0:
+            score_sound.play()
+            score_sound_countdown = 100
     else:
+        screen.blit(game_over_surface,game_over_rect)
         high_score = update_score(score,high_score)
         score_display('game_over')
     # sàn
