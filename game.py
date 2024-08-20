@@ -7,11 +7,17 @@ def draw_floor():
 pygame.init()
 screen= pygame.display.set_mode((432,768))
 clock = pygame.time.Clock()
-bg = pygame.image.load('assests//background-night.png')
+# chèn backgroud
+bg = pygame.image.load('assests//background-night.png').convert()
 bg = pygame.transform.scale2x(bg)
-floor = pygame.image.load('assests/floor.png')
+# chèn sàn
+floor = pygame.image.load('assests/floor.png').convert()
 floor = pygame.transform.scale2x(floor)
 floor_x_pos = 0
+#tạo bird
+bird = pygame.image.load('assests/yellowbird-midflap.png').convert()
+bird = pygame.transform.scale2x(bird)
+bird_rect = bird.get_rect(center = (100,384))
 
 
 while True:
@@ -20,6 +26,9 @@ while True:
             pygame.quit()
             sys.exit()
     screen.blit(bg,(0,0))
+    screen.blit(bird,bird_rect)
+
+    
     floor_x_pos -= 1
     draw_floor()
 
